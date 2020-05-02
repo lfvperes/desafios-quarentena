@@ -11,8 +11,14 @@
   --very-light-green: #D8F0D8;
 }
 
+@font-face{
+  font-family: pokemon;
+  src: url("fonts/pokemon-classic.woff") format("woff");
+}
+
 * {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: pokemon, sans-serif;
+  color: var(--white);
 }
 
 body {
@@ -28,7 +34,9 @@ button {
   height: 48px;
   cursor: pointer;
   text-transform: uppercase;
-  font-size: 18px;
+  font-size: 15px;
+  background-color: var(--black);
+  display: inline-block;
 }
 
 #arena {
@@ -36,12 +44,12 @@ button {
   flex-wrap: wrap;
   flex-direction: column;
   max-width: 600px;
+  max-height: 600px;
   width: 100%;
-  background-color: var(--very-light-green);
+  padding: 10px;
+  background-image: url("assets/tusca.png");
   border: 5px solid var(--black);
   border-radius: 10px;
-  padding-top: 25px;
-  padding-bottom: 25px;
 }
 
 .grass {
@@ -54,7 +62,7 @@ button {
   top: -25px;
 }
 
-#squirtle {
+#gyarados {
   width: 100px;
   padding: 0 20px;
   align-self: flex-end;
@@ -64,9 +72,10 @@ button {
   position: relative;
 }
 
-#squirtle img {
+#gyarados img {
+  width: 96px;
   position: relative;
-  left: 10px;
+  
   z-index: 1;
 }
 
@@ -118,9 +127,9 @@ button {
 }
 
 #options {
-  background-color: var(--orange);
   margin: 16px 0;
-  padding: 16px 25px;
+  padding: 16px 0px;
+  width: 100%;
 }
 
 .row {
