@@ -10,29 +10,29 @@ const turnText = document.getElementById('text');
 let isTurnHappening = false;
 
 const playerAttacks = {
-  thunderShock: {
-    power: 40,
+  heatWave: {
+    power: 95,
+    accuracy: 90,
+    name: 'Heat Wave',
+    type: 'fire',
+  },
+  brickBreak: {
+    power: 75,
     accuracy: 100,
-    name: 'Thunder Shock',
-    type: 'electric',
-  },
-  quickAttack: {
-    power: 40,
-    accuracy: 100,
-    name: 'Quick Attack',
-    type: 'normal',
-  },
-  thunder: {
-    power: 110,
-    accuracy: 70,
-    name: 'Thunder',
-    type: 'electric',
-  },
-  submission: {
-    power: 80,
-    accuracy: 80,
-    name: 'Submission',
+    name: 'Brick Break',
     type: 'fighting',
+  },
+  flamethrower: {
+    power: 90,
+    accuracy: 100,
+    name: 'Flamethrower',
+    type: 'fire',
+  },
+  trash: {
+    power: 120,
+    accuracy: 100,
+    name: 'Trash',
+    type: 'normal',
   }
 }
 
@@ -188,14 +188,14 @@ function turn(playerChosenAttack) {
 
 // Set buttons click interaction
 document.getElementById('thunder-shock-button').addEventListener('click', function() {
-  turn(playerAttacks.thunderShock);
+  turn(playerAttacks.heatWave);
 });
 document.getElementById('quick-attack-button').addEventListener('click', function() {
-  turn(playerAttacks.quickAttack);
+  turn(playerAttacks.brickBreak);
 });
 document.getElementById('thunder-button').addEventListener('click', function() {
-  turn(playerAttacks.thunder);
+  turn(playerAttacks.flamethrower);
 });
 document.getElementById('submission-button').addEventListener('click', function() {
-  turn(playerAttacks.submission);
+  turn(playerAttacks.trash);
 });

@@ -2,6 +2,7 @@
   --white: #d1d8e0;
   --gray: #a5b1c2;
   --black: #4b6584;
+  --real-black: #060608;
   --red: #fc5c65;
   --green: #26de81;
   --dark-green: #20bf6b;
@@ -9,6 +10,8 @@
   --blue: #4b7bec;
   --orange: #fd9644;
   --very-light-green: #D8F0D8;
+  --brown: #b47538;
+  --light-brown: #d6a851;
 }
 
 @font-face{
@@ -29,6 +32,7 @@ body {
 
 button {
   border: 3px solid var(--blue);
+  border-radius: 10px;
   margin: 5px;
   width: 50%;
   height: 48px;
@@ -46,6 +50,7 @@ button {
   max-width: 600px;
   max-height: 600px;
   width: 100%;
+  height: 100%;
   padding: 10px;
   background-image: url("assets/tusca.png");
   border: 5px solid var(--black);
@@ -55,11 +60,20 @@ button {
 .grass {
   width: 100%;
   height: 50px;
-  background-color: var(--grass-green);
-  border: 2px solid var(--green);
+  background-color: var(--brown);
+  border: 2px solid var(--light-brown);
   border-radius: 100%;
   position: relative;
   top: -25px;
+}
+
+.nome {
+  font-size: 10px;
+  background-color: var(--real-black);
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  text-transform: uppercase;
 }
 
 #gyarados {
@@ -72,63 +86,43 @@ button {
   position: relative;
 }
 
-#gyarados img {
-  width: 96px;
+#gyarados img, #tepig img {
   position: relative;
-  
   z-index: 1;
 }
 
-#opponent-health-bar {
-  width: 100%;
-  height: 10px;
-  background-color: var(--red);
-  border: 3px solid var(--black);
-  margin: 5px;
-}
-
-#opponent-health {
-  width: inherit;
-  height: 100%;
-  background-color: var(--green);
-  transition: 1000ms;
-}
-
-
-#pikachu {
+#tepig {
  width: 100px;
  padding: 0 20px;
 }
 
-#pikachu img {
-  position: relative;
-  z-index: 1;
-}
 
-#player-health-bar {
+#player-health-bar, #opponent-health-bar {
   width: 100%;
   height: 10px;
   background-color: var(--red);
   border: 3px solid var(--black);
+  border-radius: 6px;
   margin: 5px;
 }
 
-#player-health {
+#player-health, #opponent-health {
   width: inherit;
   height: inherit;
   background-color: var(--green);
   transition: 1000ms;
+  border-radius: 3px;
 }
 
 #text {
   text-align: center;
-  font-size: 30px;
+  font-size: 20px;
   margin: 0;
 }
 
 #options {
-  margin: 16px 0;
-  padding: 16px 0px;
+  margin: 16px 0 0 0;
+  padding: 16px 0 0 0;
   width: 100%;
 }
 
