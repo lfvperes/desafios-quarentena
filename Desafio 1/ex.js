@@ -1,75 +1,96 @@
 const playerHpElement = document.getElementById('player-health');
-const playerTotalHp = 274;
-let playerHp = 274;
-
 const opponentHpElement = document.getElementById('opponent-health');
-const opponentTotalHp = 292;
-let opponentHp = 292;
 
 const turnText = document.getElementById('text');
 let isTurnHappening = false;
 
-const playerAttacks = {
-  heatWave: {
-    power: 95,
-    accuracy: 90,
-    name: 'Heat Wave',
-    type: 'fire',
-  },
-  brickBreak: {
-    power: 75,
-    accuracy: 100,
-    name: 'Brick Break',
-    type: 'fighting',
-  },
-  flamethrower: {
-    power: 90,
-    accuracy: 100,
-    name: 'Flamethrower',
-    type: 'fire',
-  },
-  trash: {
-    power: 120,
-    accuracy: 100,
-    name: 'Trash',
-    type: 'normal',
+let Attack = class {
+  constructor(power, accuracy, name, type){
+    this.power = power;
+    this.accuracy = accuracy;
+    this.name = name;
+    this.type = type;
   }
-}
+};
 
-const opponentAttacks = {
-  tackle: {
-    power: 40,
-    accuracy: 100,
-    name: 'Tackle',
-    type: 'normal',
-  },
-  bubble: {
-    power: 40,
-    accuracy: 100,
-    name: 'Bubble',
-    type: 'water',
-  },
-  waterGun: {
-    power: 40,
-    accuracy: 100,
-    name: 'Water Gun',
-    type: 'water',
-  },
-  hydroPump: {
-    power: 110,
-    accuracy: 80,
-    name: 'Hydro Pump',
-    type: 'water',
+class Pokemon {
+  constructor({name,id, attacks, maxHp, hp, type}){
+    this.name = name;
+    this.id = id;
+    this.attacks = attacks;
+    this.maxHp = maxHp;
+    this.hp = hp;
+    this.type = type;
+    this.isLoser = false;
   }
-}
+  updatePokemonHp(newHP) {
+    // Prevents the HP to go lower than 0
+    this.hp = Math.max(newHP, 0);
+  
+    // If player health is equal 0 opponent wins
+    if (this.hp === 0) {
+      this.isLoser = true;
+      gameOver(this.name);
+    }
+  
+    // Update the pokemon hp bar
+    let hpElement = document.getElementById(this.id + '-health');
+    const barWidth = (this.hp / this.maxHp) * 100;
+    hpElement.style.width = barWidth + '%';
+  }
+  attack(opponent, chosenAttack) {
+    let hit = !willAttackMiss(chosenAttack.accuracy);
+    if (hit) opponent.updatePokemonHp(opponent.hp - chosenAttack.power);
+    return hit;
+  }
+};
 
-function gameOver (winner) {
+const heatWave = new Attack(95, 90,'Heat Wave', 'fire');
+const brickBreak = new Attack(75, 90, 'Brick Break', 'fighting');
+const flamethrower = new Attack(90, 100, 'Flamethrower', 'fire');
+const trash = new Attack(120, 100, 'Trash', 'normal');
+const hurricane = new Attack(110, 70, 'Hurricane', 'flying');
+const dragonDance = new Attack(0, 100, 'Dragon Dance', 'dragon');
+const hidroPump = new Attack(110, 80, 'Hidro Pump', 'water');
+
+var pignite = new Pokemon(
+  {
+    name: 'caaso',
+    id: 'player',
+    attacks: {
+    heatWave, brickBreak, flamethrower, trash
+    },
+    maxHp: 574,
+    hp: 574,
+    type: ['fire', 'fighting']
+  }
+);
+
+var gyarados = new Pokemon(
+  {
+  name: 'federal',
+  id: 'opponent',
+  attacks: {
+    hurricane, dragonDance, hidroPump, trash
+  },
+  maxHp: 550,
+  hp: 550,
+  type: ['water', 'flying']
+  }
+);
+
+function gameOver (loser) {
   // Wait 1000 (Health loss animation)
   setTimeout(() => {
-    // Update HTML text with the winner
-    turnText.innerText = winner + ' is the winner!';
-    // Open alert with the winner
-    alert(winner + ' is the winner! Close this alert to play again');
+    for (player of [pignite, gyarados]) {
+      if (!player.isLoser){
+        // Update HTML text with the winner
+        turnText.innerText = player.name + ' is the winner!';
+        // Open alert with the winner
+        alert(player.name + ' is the winner! Close this alert to play again');
+        player.isLoser = false;
+      }
+    }
     // Reload the game
     window.location.reload();
   }, 1000);
@@ -80,69 +101,12 @@ function willAttackMiss (accuracy) {
   return Math.floor(Math.random() * 100) > accuracy;
 }
 
-function updatePlayerHp(newHP) {
-  // Prevents the HP to go lower than 0
-  playerHp = Math.max(newHP, 0);
-
-  // If player health is equal 0 opponent wins
-  if (playerHp === 0) {
-    gameOver('Opponent');
-  }
-
-  // Update the player hp bar
-  const barWidth = (playerHp / playerTotalHp) * 100;
-  playerHpElement.style.width = barWidth + '%';
-}
-
-function updateOpponentHp(newHP) {
-  // Prevents the HP to go lower than 0
-  opponentHp = Math.max(newHP, 0);
-
-  // If oppont health is equal 0 player wins
-  if (opponentHp === 0) {
-    gameOver('Player');
-  }
-
-  // Update the opponents hp bar
-  const barWidth = (opponentHp / opponentTotalHp) * 100;
-  opponentHpElement.style.width = barWidth + '%';
-}
-
-// *************************************************************************************
-// Here you need to implement the player attack function that receives the used attack
-// return false if attack misses
-// otherwise update opponents health and return true
-// *************************************************************************************
-function playerAttack(attack) {
-  // 0: return false if attack misses
-  // 1: otherwise update opponents health and return true
-  let hit = !willAttackMiss(attack.accuracy);
-  if (hit) updateOpponentHp(opponentHp - attack.power);
-  return hit;  
-}
-
-
-// *************************************************************************************
-// Here you need to implement the opponent attack function that receives the used attack
-// return false if attack misses
-// otherwise update player health and return true
-// *************************************************************************************
-
-// opponent attack function that receives the used attack
-function opponentAttack(attack) {
-  // 0: return false if attack misses
-  // 1: otherwise update player health and return true
-  let hit = !willAttackMiss(attack.accuracy);
-  if(hit) updatePlayerHp(playerHp - attack.power);
-  return hit;
-}
-
 function chooseOpponentAttack () {
   // Put all opponents attacks in a array
-  const possibleAttacks = Object.values(opponentAttacks);
-
+  let possibleAttacks = Object.values(gyarados.attacks);
   // Randomly chooses one attack from the array
-  return possibleAttacks[Math.floor(Math.random() * possibleAttacks.length)];
+  let choice = possibleAttacks[Math.floor(Math.random() * possibleAttacks.length)];
+  return choice
 }
 
 function turn(playerChosenAttack) {
@@ -152,10 +116,11 @@ function turn(playerChosenAttack) {
   }
   isTurnHappening = true;
 
-  const didPlayerHit = playerAttack(playerChosenAttack);
+  //const didPlayerHit = playerAttack(playerChosenAttack);
+  const didPlayerHit = pignite.attack(gyarados, playerChosenAttack);
 
   // Update HTML text with the used attack
-  turnText.innerText = 'Player used ' + playerChosenAttack.name;
+  turnText.innerText = pignite.name + ' used ' + playerChosenAttack.name;
 
   // Update HTML text in case the attack misses
   if (!didPlayerHit) {
@@ -167,10 +132,11 @@ function turn(playerChosenAttack) {
     // Randomly chooses opponents attack
     const opponentChosenAttack = chooseOpponentAttack();
 
-    const didOpponentHit = opponentAttack(opponentChosenAttack);
-
+    //const didOpponentHit = opponentAttack(opponentChosenAttack);
+    const didOpponentHit = gyarados.attack(pignite, opponentChosenAttack);
+    
     // Update HTML text with the used attack
-    turnText.innerText = 'Opponent used ' + opponentChosenAttack.name;
+    turnText.innerText = gyarados.name + ' used ' + opponentChosenAttack.name;
 
     // Update HTML text in case the attack misses
     if (!didOpponentHit) {
@@ -188,14 +154,14 @@ function turn(playerChosenAttack) {
 
 // Set buttons click interaction
 document.getElementById('thunder-shock-button').addEventListener('click', function() {
-  turn(playerAttacks.heatWave);
+  turn(pignite.attacks.heatWave);
 });
 document.getElementById('quick-attack-button').addEventListener('click', function() {
-  turn(playerAttacks.brickBreak);
+  turn(pignite.attacks.brickBreak);
 });
 document.getElementById('thunder-button').addEventListener('click', function() {
-  turn(playerAttacks.flamethrower);
+  turn(pignite.attacks.flamethrower);
 });
 document.getElementById('submission-button').addEventListener('click', function() {
-  turn(playerAttacks.trash);
+  turn(pignite.attacks.trash);
 });
