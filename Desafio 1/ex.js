@@ -3,7 +3,11 @@ const opponentHpElement = document.getElementById('opponent-health');
 
 const turnText = document.getElementById('text');
 let isTurnHappening = false;
-
+/*
+var music = new Audio("../poketusca.mp3");
+music.play();
+//console.log(music.played);
+*/
 let Attack = class {
   constructor(power, accuracy, name, type){
     this.power = power;
@@ -134,6 +138,7 @@ function turn(playerChosenAttack) {
     const didOpponentHit = gyarados.attack(pignite, opponentChosenAttack);
     
     var sprite = window.document.getElementById("sprite-gyarados");
+    sprite.src = "assets/gyarados.gif";
 
     // Update HTML text with the used attack
     turnText.innerText = gyarados.name + ' used ' + opponentChosenAttack.name;
@@ -148,6 +153,7 @@ function turn(playerChosenAttack) {
       // Update HTML text for the next turn
       turnText.innerText = 'Please choose one attack';
       isTurnHappening = false;
+      sprite.src = "assets/gyarados-idle.gif";
     }, 2000);
   }, 2000);
 }
