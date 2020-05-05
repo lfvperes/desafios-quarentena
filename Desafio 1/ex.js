@@ -116,7 +116,6 @@ function turn(playerChosenAttack) {
   }
   isTurnHappening = true;
 
-  //const didPlayerHit = playerAttack(playerChosenAttack);
   const didPlayerHit = pignite.attack(gyarados, playerChosenAttack);
 
   // Update HTML text with the used attack
@@ -132,9 +131,10 @@ function turn(playerChosenAttack) {
     // Randomly chooses opponents attack
     const opponentChosenAttack = chooseOpponentAttack();
 
-    //const didOpponentHit = opponentAttack(opponentChosenAttack);
     const didOpponentHit = gyarados.attack(pignite, opponentChosenAttack);
     
+    var sprite = window.document.getElementById("sprite-gyarados");
+
     // Update HTML text with the used attack
     turnText.innerText = gyarados.name + ' used ' + opponentChosenAttack.name;
 
