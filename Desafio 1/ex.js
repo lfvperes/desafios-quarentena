@@ -42,9 +42,57 @@ class Pokemon {
     const barWidth = (this.hp / this.maxHp) * 100;
     hpElement.style.width = barWidth + '%';
   }
+  verifyEffect(defenseType, attackType){
+    let effect = 1;
+    for (let type of defenseType){
+      /* The loop allows the effectiveness to be cumulative. It won't happen
+      in this case, but if a Fire/Ground pokémon were to receive a
+      Water-type attack, the effectiveness would be 4x, not 2x. */
+      switch (type){
+        /* If it is a weaker type, then the attack is more effective
+        otherwise it can be less effective or normally effective */
+        case 'water':
+          effect *= (attackType === 'fire') ? 0.75 : 1;
+          break;
+        case 'flying':
+          effect *= (attackType === 'fighting') ? 0.75 : 1;
+          break;
+        case 'fire':
+          effect *= (attackType === 'water') ? 1.5
+                : (attackType === 'ice') ? 0.75
+                : 1;
+          break;
+        case 'fighting':
+          effect *= (attackType === 'flying') ? 1.5 : 1;
+          break;
+        /* Note that "no effect" (0x) was not implemented here due to the
+        absence of the types whose relations produce such state of 
+        (non-)effectiveness. Also note that the values were changed to 1.5x
+        and 0.75 to improve gameplay experience. */
+      }
+    }
+    return effect;
+  }
+  // Every attack calls this method instead of two different functions for each attack
   attack(opponent, chosenAttack) {
+    // Based on the attacks accracy, determine wether it will miss
     let hit = !willAttackMiss(chosenAttack.accuracy);
-    if (hit) opponent.updatePokemonHp(opponent.hp - chosenAttack.power);
+    
+    // Based on the attack type and the target pokémon's type, calculate damage nerf/buff
+    let effect = this.verifyEffect(opponent.type, chosenAttack.type);
+    console.log(chosenAttack.name, effect);
+
+    // If the attack hits, the target's HP will be updated
+    if (hit) opponent.updatePokemonHp(opponent.hp - chosenAttack.power * effect);
+
+    // Update HTML text with the used attack
+    turnText.innerText = this.name + ' used ' + chosenAttack.name;
+
+    // Update HTML text in case the attack misses
+    turnText.innerText += (!hit) ? ', but missed!'
+                      : (effect > 1) ? ', eita porra!'
+                      : (effect < 1) ? ', kkkkkk'
+                      : ' ';
     return hit;
   }
 };
@@ -54,7 +102,7 @@ const brickBreak = new Attack(75, 90, 'Brick Break', 'fighting');
 const flamethrower = new Attack(90, 100, 'Flamethrower', 'fire');
 const trash = new Attack(120, 100, 'Trash', 'normal');
 const hurricane = new Attack(110, 70, 'Hurricane', 'flying');
-const dragonDance = new Attack(0, 100, 'Dragon Dance', 'dragon');
+const iceFang = new Attack(65, 95, 'Ice Fang', 'ice');
 const hidroPump = new Attack(110, 80, 'Hidro Pump', 'water');
 
 var pignite = new Pokemon(
@@ -75,7 +123,7 @@ var gyarados = new Pokemon(
   name: 'federal',
   id: 'opponent',
   attacks: {
-    hurricane, dragonDance, hidroPump, trash
+    hurricane, iceFang, hidroPump, trash
   },
   maxHp: 550,
   hp: 550,
@@ -122,14 +170,6 @@ function turn(playerChosenAttack) {
 
   const didPlayerHit = pignite.attack(gyarados, playerChosenAttack);
 
-  // Update HTML text with the used attack
-  turnText.innerText = pignite.name + ' used ' + playerChosenAttack.name;
-
-  // Update HTML text in case the attack misses
-  if (!didPlayerHit) {
-    turnText.innerText += ', but missed!';
-  }
-
   // Wait 2000ms to execute opponent attack (Player attack animation time)
   setTimeout(() => {
     // Randomly chooses opponents attack
@@ -139,15 +179,7 @@ function turn(playerChosenAttack) {
     
     var sprite = window.document.getElementById("sprite-gyarados");
     sprite.src = "assets/gyarados.gif";
-
-    // Update HTML text with the used attack
-    turnText.innerText = gyarados.name + ' used ' + opponentChosenAttack.name;
-
-    // Update HTML text in case the attack misses
-    if (!didOpponentHit) {
-      turnText.innerText += ', but missed!';
-    }
-
+    
     // Wait 2000ms to end the turn (Opponent attack animation time)
     setTimeout(() => {
       // Update HTML text for the next turn
