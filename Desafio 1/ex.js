@@ -90,7 +90,7 @@ class Pokemon {
 
     // Update HTML text in case the attack misses
     turnText.innerText += (!hit) ? ', but missed!'
-                      : (effect > 1) ? ', eita porra!'
+                      : (effect > 1) ? ', eita.'
                       : (effect < 1) ? ', kkkkkk'
                       : ' ';
     return hit;

@@ -114,11 +114,19 @@ button {
   border-radius: 3px;
 }
 
-#text {
+div#text-box {
   text-align: center;
+  vertical-align: bottom;
   font-size: 20px;
-  margin: 32px 0 0 0;
+  height: 70px;
+  margin: 0;
   background-color: var(--real-black);
+}
+
+#text-box p {
+  margin: 0;
+  display: inline-block;
+  vertical-align: bottom;
 }
 
 #options {
