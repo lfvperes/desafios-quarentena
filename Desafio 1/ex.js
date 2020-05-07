@@ -9,11 +9,15 @@ music.play();
 //console.log(music.played);
 */
 let Attack = class {
-  constructor(power, accuracy, name, type){
+  constructor(power, accuracy, name, type, statusChange, chance){
     this.power = power;
     this.accuracy = accuracy;
     this.name = name;
     this.type = type;
+    this.statusChange = {
+      change: statusChange,
+      chance: chance
+    };
   }
 };
 
@@ -26,6 +30,13 @@ class Pokemon {
     this.hp = hp;
     this.type = type;
     this.isLoser = false;
+    this.status = {
+      frozen: false,
+      burnt: false,
+      paralyzed: false,
+      confused: false,
+    }
+    this.canFight = true;
   }
   updatePokemonHp(newHP) {
     // Prevents the HP to go lower than 0
@@ -67,48 +78,88 @@ class Pokemon {
           break;
         /* Note that "no effect" (0x) was not implemented here due to the
         absence of the types whose relations produce such state of 
-        (non-)effectiveness. Also note that the values were changed to 1.5x
-        and 0.75 to improve gameplay experience. */
+        (non-)effectiveness. Also note that the values were changed from 2x
+        and 0.5x to 1.5x and 0.75 to improve gameplay experience. */
       }
     }
     return effect;
   }
+  changeStatus(attack){
+    if (Math.floor(Math.random() * 100) < attack.statusChange.chance){
+      
+      let text = this.name + ' congelado';
+      this.status[attack.statusChange.change] = true;
+      this.canFight = false;
+      return text;
+    }else{
+      return 'unchanged';
+    }
+  }
+
   // Every attack calls this method instead of two different functions for each attack
   attack(opponent, chosenAttack) {
+    
     // Based on the attacks accracy, determine wether it will miss
     let hit = !willAttackMiss(chosenAttack.accuracy);
     
     // Based on the attack type and the target pokémon's type, calculate damage nerf/buff
     let effect = this.verifyEffect(opponent.type, chosenAttack.type);
-    console.log(chosenAttack.name, effect);
 
     // If the attack hits, the target's HP will be updated
     if (hit) opponent.updatePokemonHp(opponent.hp - chosenAttack.power * effect);
 
     // Update HTML text with the used attack
+    
     turnText.innerText = this.name + ' used ' + chosenAttack.name;
 
-    // Update HTML text in case the attack misses
-    turnText.innerText += (!hit) ? ', but missed!'
-                      : (effect > 1) ? ', eita.'
-                      : (effect < 1) ? ', kkkkkk'
-                      : ' ';
-    return hit;
+    /* Update HTML text on three cases: the attack misses, the attack is 
+    super effective or the attack is not very effective  */
+    if(!this.canFight){
+      for (stat in this.status){
+        if (this.status[stat]){
+          turnText.innerText = this.name + ' is ' + stat;
+        }
+      }
+    }else{
+      turnText.innerText += (!hit) ? ', but missed!'
+                  : (effect > 1) ? ", it's super effective!"
+                  : (effect < 1) ? ", it's not very effective..."
+                  : '!';    
+    console.log(turnText.innerText);
+    }
+
+    let statusText = opponent.changeStatus(chosenAttack);
+
+    return statusText;
   }
 };
 
-const heatWave = new Attack(95, 90,'Heat Wave', 'fire');
-const brickBreak = new Attack(75, 90, 'Brick Break', 'fighting');
-const flamethrower = new Attack(90, 100, 'Flamethrower', 'fire');
-const trash = new Attack(120, 100, 'Trash', 'normal');
-const hurricane = new Attack(110, 70, 'Hurricane', 'flying');
-const iceFang = new Attack(65, 95, 'Ice Fang', 'ice');
-const hidroPump = new Attack(110, 80, 'Hidro Pump', 'water');
+const heatWave = new Attack(95, 90,'Heat Wave', 'fire', 'frozen', 0);
+const flamethrower = new Attack(90, 100, 'Flamethrower', 'fire', 'frozen', 0);
+const ember = new Attack(40, 100, 'Ember', 'fire', 'frozen', 0);
+const brickBreak = new Attack(75, 90, 'Brick Break', 'fighting', 'frozen', 80);
+const trash = new Attack(120, 100, 'Trash', 'normal', 'frozen', 80);
+const tackle = new Attack(40, 100, 'Tackle', 'normal', 'frozen', 0);
+const roar = new Attack(0, 100, 'Roar', 'normal', 'frozen', 100);
+const hurricane = new Attack(110, 70, 'Hurricane', 'flying', 'frozen', 80);
+const iceFang = new Attack(65, 95, 'Ice Fang', 'ice', 'frozen', 80);
+const hidroPump = new Attack(110, 80, 'Hidro Pump', 'water', 'frozen', 80);
+
+var tepig = new Pokemon(
+  {
+    name: 'bixo caaso',
+    id: 'player',
+    attacks: {ember, tackle, flamethrower, roar},
+    maxHp: 300,
+    hp: 300,
+    type: ['fire']
+  }
+);
 
 var pignite = new Pokemon(
   {
     name: 'caaso',
-    id: 'player',
+    id: 'player-evolved',
     attacks: {
     heatWave, brickBreak, flamethrower, trash
     },
@@ -120,16 +171,24 @@ var pignite = new Pokemon(
 
 var gyarados = new Pokemon(
   {
-  name: 'federal',
-  id: 'opponent',
-  attacks: {
-    hurricane, iceFang, hidroPump, trash
-  },
-  maxHp: 550,
-  hp: 550,
-  type: ['water', 'flying']
+    name: 'federal',
+    id: 'opponent',
+    attacks: {
+      hurricane, iceFang, hidroPump, trash
+    },
+    maxHp: 550,
+    hp: 550,
+    type: ['water', 'flying']
   }
 );
+
+function prompt (text){
+  setTimeout(() =>{
+    
+    turnText.innerText = text;
+    console.log(turnText.innerText);
+  }, 3000);
+}
 
 function gameOver (loser) {
   // Wait 1000 (Health loss animation)
@@ -137,7 +196,9 @@ function gameOver (loser) {
     for (player of [pignite, gyarados]) {
       if (!player.isLoser){
         // Update HTML text with the winner
+        
         turnText.innerText = player.name + ' is the winner!';
+        console.log(turnText.innerText);
         // Open alert with the winner
         alert(player.name + ' is the winner! Close this alert to play again');
         player.isLoser = false;
@@ -145,7 +206,7 @@ function gameOver (loser) {
     }
     // Reload the game
     window.location.reload();
-  }, 1000);
+  }, 3000);
 }
 
 // Check if attacks misses
@@ -158,48 +219,86 @@ function chooseOpponentAttack () {
   let possibleAttacks = Object.values(gyarados.attacks);
   // Randomly chooses one attack from the array
   let choice = possibleAttacks[Math.floor(Math.random() * possibleAttacks.length)];
-  return choice
+  return choice;
+}
+
+function statusBack (pokemon){
+  // After one turn, the pokémon stops being frozen
+  for (let stat in pokemon.status){
+    if (pokemon.status[stat]){
+      pokemon.status[stat] = false;
+      
+      turnText.innerText = pokemon.name + ' is not ' + stat + ' anymore';
+      console.log(turnText.innerText);
+    }
+  }
 }
 
 function turn(playerChosenAttack) {
-  // Don't start another turn till the current one is not finished
   if (isTurnHappening) {
     return;
   }
   isTurnHappening = true;
 
-  const didPlayerHit = pignite.attack(gyarados, playerChosenAttack);
-
-  // Wait 2000ms to execute opponent attack (Player attack animation time)
+  statusBack(gyarados);
   setTimeout(() => {
-    // Randomly chooses opponents attack
-    const opponentChosenAttack = chooseOpponentAttack();
+    statusOpponent = tepig.attack(gyarados, playerChosenAttack);
+    
+    setTimeout(() =>{
+      // Display a text saying the enemy has been burned, paralized etc
+      for (stat in gyarados.status){
+        if (gyarados.status[stat]){
+          console.log(gyarados.name, gyarados.status, stat, gyarados.status[stat]);
+          
+          turnText.innerText = statusOpponent;
+          console.log(turnText.innerText);
+        }
+      }
 
-    const didOpponentHit = gyarados.attack(pignite, opponentChosenAttack);
-    
-    var sprite = window.document.getElementById("sprite-gyarados");
-    sprite.src = "assets/gyarados.gif";
-    
-    // Wait 2000ms to end the turn (Opponent attack animation time)
-    setTimeout(() => {
-      // Update HTML text for the next turn
-      turnText.innerText = 'Please choose one attack';
-      isTurnHappening = false;
-      sprite.src = "assets/gyarados-idle.gif";
-    }, 2000);
-  }, 2000);
+      setTimeout(() => {
+
+        statusBack(tepig);
+
+          setTimeout(() => {  
+
+          const opponentChosenAttack = chooseOpponentAttack();
+          
+          statusPlayer = gyarados.attack(tepig, opponentChosenAttack);
+          var sprite = window.document.getElementById("sprite-gyarados");
+          sprite.src = "assets/gyarados.gif";
+
+          setTimeout(() => {
+            for (stat in tepig.status){
+              if (tepig.status[stat]){
+                console.log(tepig.name, tepig.status, stat, tepig.status[stat]);
+                
+                turnText.innerText = statusPlayer;
+                console.log(turnText.innerText);
+              }
+            }
+            
+
+            setTimeout(() => {
+              // Update HTML text for the next turn
+              turnText.innerText = 'Please choose one attack';
+              console.log(turnText.innerText);
+              isTurnHappening = false;
+              sprite.src = "assets/gyarados-idle.gif";
+            }, 1200);
+          }, 1200);
+        }, 1200);
+      }, 1200);
+    }, 1200);
+  }, 1200);
+
 }
 
 // Set buttons click interaction
-document.getElementById('thunder-shock-button').addEventListener('click', function() {
-  turn(pignite.attacks.heatWave);
-});
-document.getElementById('quick-attack-button').addEventListener('click', function() {
-  turn(pignite.attacks.brickBreak);
-});
-document.getElementById('thunder-button').addEventListener('click', function() {
-  turn(pignite.attacks.flamethrower);
-});
-document.getElementById('submission-button').addEventListener('click', function() {
-  turn(pignite.attacks.trash);
-});
+var option = document.getElementsByClassName("attack-button");
+
+for (let i = 0; i < option.length; i++){
+  option[i].addEventListener('click', function(){
+    turn(tepig.attacks[option[i].id]);
+  })
+  option[i].innerText = tepig.attacks[option[i].id].name;
+}
