@@ -41,3 +41,25 @@ html, body {
 .revealed {
 	cursor: default;
 }
+
+.revealed.flag.bomb {
+	background-image: url('assets/green-flag.png');
+	background-color: green;
+}
+
+.wrong-flag {
+	background-image: url('assets/wrong-flag.png');
+}
+
+button {
+	width: 150px;
+	height: 50px;
+	border: 1px solid black;
+	border-radius: 10px;
+	user-select: none;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-size: cover;
+	margin: 10px;
+}

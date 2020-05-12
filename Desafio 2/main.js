@@ -48,6 +48,11 @@ class Cell {
 		this.visited = true;
 	}
 
+	toggleFlag() {
+		this.isFlagged = !this.isFlagged;
+		(this.isFlagged) ? this.element.classList.add('flag') : this.element.classList.remove('flag');
+	}
+
   // *************************************************************************************
   // Here you need to implement toggleFlag function that depending on isFlagged variable
   // will apply or remove the css class 'flag' from the this instantite element
@@ -180,5 +185,61 @@ class Map {
 	}
 }
 
+class Level {
+	constructor (isSelected, width, height, numberOfBombs){
+		this.isSelected = isSelected;
+		this.width = width;
+		this.height = height;
+		this.numberOfBombs = numberOfBombs;
+	}
+}
+
+class Menu {
+	constructor (root) {
+		//this.isPlaying = false;
+		
+		const beginner = new Level(false, 9, 9, 10);
+		const intermediate = new Level(false, 16, 16, 40);
+		const expert = new Level(false, 16, 30, 99);
+		const insane = new Level(false, 50, 30, 300);
+		var custom = new Level(false, 10, 10, 10);
+		this.levels = {beginner, intermediate, expert, insane, custom};
+
+		
+		var options = document.createElement('div');
+		options.id = 'options';
+		for (let level in this.levels) {
+			let button = document.createElement('button');
+			button.id = level;
+			button.innerText = level;
+			options.appendChild(button);
+			root.appendChild(options);
+			button.addEventListener('click', () => {
+				this.levels[button.id].isSelected = true;
+				this.startGame();
+			});
+		}
+
+	}
+	
+	startGame () {
+		let root = document.getElementById('root');
+		root.removeChild(options);
+		for (let level in this.levels) {
+			if (this.levels[level].isSelected) {
+				console.log(this.levels[level]);
+				new Map(
+					root, 
+					this.levels[level].width, 
+					this.levels[level].height, 
+					this.levels[level].numberOfBombs
+				);
+			}
+		}
+	}
+}
+
+var game = new Menu(document.getElementById('root'));
+
 // Instantiate a Map object
-new Map(document.getElementById('root'), 50, 30, 300);
+//new Map(document.getElementById('root'), 50, 30, 300);
