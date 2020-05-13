@@ -41,6 +41,8 @@ class Cell {
 		this.element.classList.replace('hidden', 'revealed');
 		if (this.isBomb) {
 			this.element.classList.add('bomb');
+		} else if (this.isFlagged) {
+			this.element.classList.add('wrong-flag');
 		} else {
 			this.element.innerText = this.value;
 			this.element.style.color = CellColors[this.value] || 'black';
@@ -178,7 +180,7 @@ class Map {
 		for (let row = 0; row < this.height; row ++) {
 			for (let column = 0; column < this.width; column ++) {
 				const cell = this.cells[row][column];
-				if (cell.isBomb && !cell.isFlagged) cell.reveal();
+				if (cell.isBomb || cell.isFlagged) cell.reveal();
 			}
 		}
 		this.isGameOver = true;
@@ -219,7 +221,6 @@ class Menu {
 				this.startGame();
 			});
 		}
-
 	}
 	
 	startGame () {

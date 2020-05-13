@@ -44,11 +44,12 @@ html, body {
 
 .revealed.flag.bomb {
 	background-image: url('assets/green-flag.png');
-	background-color: green;
+	background-color: lightgreen;
 }
 
 .wrong-flag {
 	background-image: url('assets/wrong-flag.png');
+	background-color: #777;
 }
 
 button {
