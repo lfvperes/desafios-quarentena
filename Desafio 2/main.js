@@ -199,15 +199,15 @@ class Level {
 class Menu {
 	constructor (root) {
 		//this.isPlaying = false;
-		
+
 		const beginner = new Level(false, 9, 9, 10);
 		const intermediate = new Level(false, 16, 16, 40);
 		const expert = new Level(false, 16, 30, 99);
 		const insane = new Level(false, 50, 30, 300);
 		var custom = new Level(false, 10, 10, 10);
 		this.levels = {beginner, intermediate, expert, insane, custom};
+		this.root = root;
 
-		
 		var options = document.createElement('div');
 		options.id = 'options';
 		for (let level in this.levels) {
@@ -215,22 +215,54 @@ class Menu {
 			button.id = level;
 			button.innerText = level;
 			options.appendChild(button);
-			root.appendChild(options);
+			this.root.appendChild(options);
 			button.addEventListener('click', () => {
 				this.levels[button.id].isSelected = true;
-				this.startGame();
+				this.levels.custom.isSelected ? this.customSizes() : this.startGame();
 			});
 		}
+
+		var sizes = document.createElement('div');
+		sizes.id = 'sizes';
+		for (let number in this.levels.custom) {
+			if (number != 'isSelected') {
+				let p = document.createElement('p');
+				//p.className = "custom-size";
+				p.innerText = number;
+
+				let input = document.createElement('input');
+				input.className = "custom-size";
+				input.id = number;
+				input.type = "number";
+				input.value = this.levels.custom[number];
+				
+				sizes.appendChild(p);
+				sizes.appendChild(input);
+				this.root.appendChild(sizes);
+			}
+		}
 	}
+
+	// tirar ids desnecessarios
 	
+	customSizes () {
+		for (let number in this.levels.custom) {
+			if (number != 'isSelected') {
+				this.levels.custom[number] = document.getElementById(number).value;
+			}
+		}
+		this.startGame();
+	}
+
 	startGame () {
-		let root = document.getElementById('root');
-		root.removeChild(options);
+		console.log(options);
+		this.root.removeChild(options);
+		this.root.removeChild(sizes);
 		for (let level in this.levels) {
 			if (this.levels[level].isSelected) {
 				console.log(this.levels[level]);
 				new Map(
-					root, 
+					this.root, 
 					this.levels[level].width, 
 					this.levels[level].height, 
 					this.levels[level].numberOfBombs
