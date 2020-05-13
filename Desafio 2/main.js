@@ -73,6 +73,7 @@ class Map {
 		this.hasMapBeenClickedYet = false;
 		this.isGameOver = false;
 		this.visibleCells = 0;
+		this.lives = 3;
 
 		for (let row = 0; row < height; row ++) {
 			this.cells.push([]);
@@ -82,6 +83,17 @@ class Map {
 		}
 
 		root.style.gridTemplateColumns = `repeat(${width}, max-content)`;
+		
+		let lives = document.createElement('div');
+		lives.id = "lives";
+		for (let life = 0; life < 3; life++) {
+			let img = document.createElement('img');
+			img.className = "life";
+			img.id = life + 1;
+			img.src = "assets/smiley.png";
+			lives.appendChild(img);
+		}
+		document.body.insertBefore(lives, root);
 	}
 
 	// Used to verify if the given position is outside the map bounds
@@ -151,7 +163,14 @@ class Map {
 		}
 		if (clickedCell.isBomb) {
 			clickedCell.element.style.backgroundColor = 'red';
-			this.gameOver();
+			if (this.lives > 0) {
+				document.getElementById(this.lives).src = "assets/frowny.png";
+				this.lives--;
+				clickedCell.reveal();
+			} else if (this.lives === 0) {
+				this.gameOver();
+			}
+			
 			return;
 		}
 		clickedCell.reveal();
@@ -208,6 +227,7 @@ class Menu {
 		this.levels = {beginner, intermediate, expert, insane, custom};
 		this.root = root;
 
+		root.classList.add('start-menu');
 		var options = document.createElement('div');
 		options.id = 'options';
 		for (let level in this.levels) {
@@ -255,12 +275,11 @@ class Menu {
 	}
 
 	startGame () {
-		console.log(options);
+		this.root.classList.remove('start-menu');
 		this.root.removeChild(options);
 		this.root.removeChild(sizes);
 		for (let level in this.levels) {
 			if (this.levels[level].isSelected) {
-				console.log(this.levels[level]);
 				new Map(
 					this.root, 
 					this.levels[level].width, 
@@ -273,6 +292,3 @@ class Menu {
 }
 
 var game = new Menu(document.getElementById('root'));
-
-// Instantiate a Map object
-//new Map(document.getElementById('root'), 50, 30, 300);
