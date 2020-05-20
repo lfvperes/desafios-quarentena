@@ -19,6 +19,11 @@ class Asteroid extends MovableEntity {
 		mapInstance,
 		initialPosition
 	) {
+		let type = {
+			prova: false,
+			rec: false,
+			lista: false
+		};
 		const size = Asteroid.getRandomSize();
 		const direction = Asteroid.getRandomDirection();
 

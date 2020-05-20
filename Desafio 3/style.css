@@ -66,3 +66,16 @@ body, html {
 .header {
 	font-size: 12px;
 }
+
+#arena-container {
+	position: absolute;
+}
+
+#fps {
+	position: absolute;
+	z-index: 100;
+	display: unset;
+	left: 10px;
+	top: 10px;
+	color: var(--nice-purple);
+}
