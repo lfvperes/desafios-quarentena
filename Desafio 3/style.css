@@ -79,3 +79,9 @@ body, html {
 	top: 10px;
 	color: var(--nice-purple);
 }
+
+.movable-entity p {
+	color: red;
+	text-align: center;
+	margin: 25%;
+}

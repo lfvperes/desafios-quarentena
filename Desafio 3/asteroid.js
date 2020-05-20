@@ -46,6 +46,11 @@ class Asteroid extends MovableEntity {
 		const asteroidImageIndex = Math.floor(Math.random() * 3) + 1;
 		this.rootElement.style.backgroundImage = `url('assets/asteroid-${asteroidImageIndex}.svg')`;
 		this.rootElement.style.backgroundSize = size + 'px';
+
+		let p = document.createElement('p');
+		p.innerText = 'P' + `${Math.floor(size/10 - 1)}`;
+		this.rootElement.appendChild(p);
+		//this.rootElement.innerText = 'P' + `${Math.floor(size/10 - 1)}`;
 	}
 
 	/**

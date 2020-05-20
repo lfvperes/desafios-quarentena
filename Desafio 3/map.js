@@ -117,5 +117,15 @@ class Map {
 			// create the asteroid
 			new Asteroid(this.containerElement, this, position);
 		}
+		console.log(Date.now());
 	}
+
+	// This will update the count every 1000 miliseconds (1 second)
+	updateCounter() {
+		let i = 0;
+		setInterval(() => {
+			console.log(i);
+			i++;
+		}, 1000);
+	} 
 }
