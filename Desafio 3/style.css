@@ -1,3 +1,8 @@
+:root {
+	--nice-purple: blueviolet;
+	--nice-blue: cornflowerblue;
+}
+
 * {
 	box-sizing: border-box;
 }
@@ -6,14 +11,15 @@ body, html {
 	margin: 0;
 	height: 100%;
 	overflow: hidden;
+	font-family: 'Orbitron', sans-serif;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 #root {
 	height: 100%;
 	width: 100%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
 }
 
 #arena-line {
@@ -22,7 +28,8 @@ body, html {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	border: 1px solid black;
+	border: 2px solid var(--nice-purple);
+	background-color: var(--nice-blue);
 	border-radius: 100%;
 	overflow: hidden;
 }
@@ -34,4 +41,28 @@ body, html {
 
 .movable-entity {
 	position: absolute;
+}
+
+#counter-container {
+	height: 100px;
+	width: 480px;
+	border: 2px solid var(--nice-blue);
+	font-size: 42px;
+	background-color: var(--nice-purple);
+	padding: 10px;
+}
+
+.counter {
+	height: 70px;
+	width: 210px;
+	margin: 5px;
+	padding: 5px;
+	background-color: var(--nice-blue);
+	color: white;
+	text-align: center;
+	display: inline-block;
+}
+
+.header {
+	font-size: 12px;
 }

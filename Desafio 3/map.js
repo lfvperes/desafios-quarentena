@@ -9,8 +9,12 @@ class Map {
 
 	/**
 	* @argument { HTMLDivElement } containerElement
+	* @argument { Counter } hitCounter
 	*/
-	constructor (containerElement) {
+	constructor (
+		containerElement,
+		hitCounter
+	) {
 		// This array will contain all of the game's movableEntities.
 		// All movableEntities will have it's physics updated in the `frame` function,
 		// and will also be checked for possible collisions every frame.
@@ -20,6 +24,8 @@ class Map {
 
 		// This is to allow for the map to set it's difficulty based on the game's time length
 		this.gameStartTimestamp = Date.now();
+
+		this.hitCounter = hitCounter;
 	}
 
 	/**
@@ -56,6 +62,7 @@ class Map {
 	* https://www.geeksforgeeks.org/instanceof-operator-in-javascript/
 	* @argument { MovableEntity } entity1
 	* @argument { MovableEntity } entity2
+	* @argument { Counter } hitCounter
 	*/
 	verifyForCollision (entity1, entity2) {
 		if (entity1 instanceof Asteroid && entity2 instanceof Asteroid) return;
