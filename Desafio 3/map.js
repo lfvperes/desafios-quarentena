@@ -96,7 +96,7 @@ class Map {
 
 	shouldItemSpawn () {
 		// Note that the chance to spawn more items is smaller than that of asteroids.
-		const itemSpawnChance = 0.003 + Math.sqrt(Date.now() - this.gameStartTimestamp) / 10000000;
+		const itemSpawnChance = 0.0005 + Math.sqrt(Date.now() - this.gameStartTimestamp) / 10000000;
 
 		return Math.random() < itemSpawnChance;
 	}
@@ -129,8 +129,8 @@ class Map {
 			// pick a random position for the asteroid
 			let position = new Vector(Math.random() - 0.5, Math.random() - 0.5).normalize().scale(299);
 			
-			// create the asteroid
-			new Asteroid(this.containerElement, this, position);
+			// create the asteroid afeter choosing type
+			new Asteroid(this.containerElement, this, position, 'random');
 		}
 
 		// see if any item should spawn

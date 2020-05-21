@@ -15,25 +15,33 @@ const MAX_ASTEROID_ROTATION_SPEED = 1;
 */
 class Asteroid extends MovableEntity {
 	
-	type = {
-		prova: false,
-		rec: false,
-		trabalho: false
-	};
-
 	constructor (
 		containerElement,
 		mapInstance,
-		initialPosition
+		initialPosition,
+		type
 	) {
 		const size = Asteroid.getRandomSize();
 		const direction = Asteroid.getRandomDirection();
+		
 
+		
 		// The `super` function will call the constructor of the parent class.
 		// If you'd like to know more about class inheritance in javascript, see this link
 		// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes#Sub_classing_with_extends
 		super(containerElement, size, initialPosition, initialPosition.scale(-0.001), direction);
 
+		this.type = {
+			prova: false,
+			//rec: false,
+			trabalho: false
+		};
+		if (type == 'prova') {
+			this.type.prova = true;
+			this.type.trabalho = false;
+		} else if (type == 'random'){
+			this.getRandomType();
+		}
 		this.mapInstance = mapInstance;
 		this.rotationSpeed = Asteroid.getRandomRotationSpeed();
 
@@ -50,7 +58,13 @@ class Asteroid extends MovableEntity {
 		this.rootElement.style.backgroundSize = size + 'px';
 
 		let p = document.createElement('p');
-		p.innerText = 'P' + `${Math.floor(size/10 - 1)}`;
+		if (this.type.prova) {
+			p.innerText = 'P' + `${Math.floor(size/10 - 1)}`;
+		} else if (this.type.trabalho) {
+			p.innerText = 'trabalho em grupo';
+			p.style.fontSize = '10px'
+		}
+		//p.innerText = 'P' + `${Math.floor(size/10 - 1)}`;
 		this.rootElement.appendChild(p);
 		//this.rootElement.innerText = 'P' + `${Math.floor(size/10 - 1)}`;
 	}
@@ -65,6 +79,16 @@ class Asteroid extends MovableEntity {
 	*/
 	static getRandomSize () {
 		return Math.floor(Math.random() * (MAX_ASTEROID_SIZE - MIN_ASTEROID_SIZE) + MIN_ASTEROID_SIZE);
+	}
+
+	getRandomType () {
+		if (Math.floor(Math.random() * 2) == 0) {
+			this.type.prova = true;
+			this.type.trabalho = false;
+		} else {
+			this.type.prova = false;
+			this.type.trabalho = true;
+		}
 	}
 
 	/**
@@ -111,6 +135,15 @@ class Asteroid extends MovableEntity {
 
 			// Increment the counter
 			this.mapInstance.hitCounter.update();
+			if (this.type.prova) {
+				return;
+			} else if (this.type.trabalho) {
+				let position1 = new Vector(this.position.x - 10,this.position.y - 10);
+				let position2 = new Vector(this.position.x + 10,this.position.y + 10);
+				
+				new Asteroid(this.mapInstance.containerElement, this.mapInstance, position1, 'prova');
+				new Asteroid(this.mapInstance.containerElement, this.mapInstance, position2, 'prova');
+			}
 		}
 	}
 
