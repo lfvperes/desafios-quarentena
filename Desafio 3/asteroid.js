@@ -111,8 +111,6 @@ class Asteroid extends MovableEntity {
 
 			// Increment the counter
 			this.mapInstance.hitCounter.update();
-
-			console.log(this.type);
 		}
 	}
 

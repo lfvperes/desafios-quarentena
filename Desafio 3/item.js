@@ -25,7 +25,6 @@ class Item extends MovableEntity {
         
         mapInstance.addEntity(this);
 
-        console.log(mapInstance.containerElement);
         this.rootElement.style.backgroundImage = "url('assets/aim.png')";
         this.rootElement.style.backgroundSize = this.size + 'px';
     }

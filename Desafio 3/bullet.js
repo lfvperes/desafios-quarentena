@@ -49,12 +49,20 @@ class Bullet extends MovableEntity {
 				break;
 		}
 		this.rootElement.style.backgroundSize = this.size + 'px';
-		console.log(type.name);
 	}
 
 	// If the bullet collides with an asteroid, delete the bullet.
 	collided (object) {
 		if (object instanceof Asteroid) {
+			this.mapInstance.removeEntity(this);
+			this.delete();
+		}
+	}
+
+	frame () {
+		super.frame();
+		//console.log(this.position.magnitude());
+		if (this.position.magnitude() > 250) {
 			this.mapInstance.removeEntity(this);
 			this.delete();
 		}
