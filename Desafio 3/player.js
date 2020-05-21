@@ -1,4 +1,5 @@
 const PLAYER_SIZE = 20;
+const PLAYER_SPEED = 10;
 
 /**
 * This is a class declaration
@@ -58,12 +59,25 @@ class Player extends MovableEntity {
 	}
 
 	/**
+	 * will make the player "walk"
+	 */
+	walk (step) {
+		this.velocity = PLAYER_SPEED * step;
+	}
+
+	// make the player stops
+	stop () {
+		this.velocity = 0;
+	}
+
+	/**
 	* Instantiates a bullet in front of the player.
 	*/
 	shoot () {
 		new Bullet (this.containerElement, this.mapInstance, this.direction, this.equippedItem);
 	}
 
+	// when the player catches an item, the equip this item
 	equip (item) {
 		this.equippedTime = timer.count;
 		this.equippedItem = item.type;
@@ -73,11 +87,13 @@ class Player extends MovableEntity {
 		face.innerText = item.type.name;
 	}
 
+	// when the item duration passes, the item is unequipped
 	unequip () {
 		let face = document.getElementById('item-face');
 		face.style.backgroundImage = "url('assets/none.png')";
 		face.style.backgroundSize = 30 + 'px';
 		face.innerText = ' ';
+		this.equippedItem = {"name" : "none"};
 	}
 
 	/**

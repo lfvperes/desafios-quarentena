@@ -36,7 +36,11 @@ function frame () {
 	// if the player is pressing one of the keys, call the turn function
 	if (pressedKeys['a'] || pressedKeys['ArrowLeft']) player.turn(-1);
 	if (pressedKeys['d'] || pressedKeys['ArrowRight']) player.turn(1);
-	
+	/*
+	// if the player is pressing one of the keys, call the walk function
+	if (pressedKeys['w'] || pressedKeys['ArrowUp']) player.walk(-1);
+	if (pressedKeys['s'] || pressedKeys['ArrowDown']) player.walk(1);
+	*/
 	if (Date.now()/1000 - time > 1) {
 		timer.update();
 		time = Date.now()/1000;
@@ -64,6 +68,11 @@ document.body.addEventListener('keydown', event => {
 	pressedKeys[event.key] = true;
 });
 
+document.body.addEventListener('click', event => {
+	// if the mouse button is cliked, the player will shoot.
+	player.shoot();
+});
+
 // This function will run every time the player releases a key
 document.body.addEventListener('keyup', event => {
 	// removes the pressed key to the pressedKey dictionary
@@ -74,6 +83,11 @@ document.body.addEventListener('keyup', event => {
 // if you'd like to know more about intervals, see this link
 // https://javascript.info/settimeout-setinterval
 const intervalHandler = setInterval(frame);
+
+// makes the player turn by scrollng the mouse wheel inside the arena
+function playerTurn (event) {
+	player.turn(event.deltaY/15);
+}
 
 // This is the function that will end the game
 function gameOver () {
