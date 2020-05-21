@@ -9,18 +9,25 @@
 </head>
 <body>
 	<div id="root">
-		<div id="counter-container">
-			<div class="counter">
-				<div class="header">time</div>
-				<div id="timer">0</div>
-			</div>
-			<div class="counter">
-				<div class="header">destroyed asteroids</div>
-				<div id="hits">0</div>
+		<div class="container">
+			<div id="counter-container">
+				<div class="counter">
+					<div class="header">time</div>
+					<div id="timer">0</div>
+				</div>
+				<div class="counter">
+					<div class="header">destroyed asteroids</div>
+					<div id="hits">0</div>
+				</div>
 			</div>
 		</div>
-		<div id="arena-container">
+		
+		<div id="arena-container" class="container">
 			<div id="fps">0 FPS</div>
+			<div id="item">
+				<div class="header">item</div>
+				<div id="item-face"></div>
+			</div>
 			<div id="arena-line">
 				<div id="movable-entity-container"></div>
 			</div>
@@ -33,6 +40,7 @@
 	<script src="asteroid.js"></script>
 	<script src="player.js"></script>
 	<script src="bullet.js"></script>
+	<script src="item.js"></script>
 	<script src="map.js"></script>
 	<script src="index.js"></script>
 </body>

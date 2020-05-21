@@ -26,6 +26,7 @@ class Map {
 		this.gameStartTimestamp = Date.now();
 
 		this.hitCounter = hitCounter;
+		this.fps = 0;
 	}
 
 	/**
@@ -62,12 +63,18 @@ class Map {
 	* https://www.geeksforgeeks.org/instanceof-operator-in-javascript/
 	* @argument { MovableEntity } entity1
 	* @argument { MovableEntity } entity2
-	* @argument { Counter } hitCounter
 	*/
 	verifyForCollision (entity1, entity2) {
 		if (entity1 instanceof Asteroid && entity2 instanceof Asteroid) return;
+		
 		if (entity1 instanceof Player && entity2 instanceof Bullet) return;
 		if (entity1 instanceof Bullet && entity2 instanceof Player) return;
+		
+		if (entity1 instanceof Item && entity2 instanceof Item) return;
+		if (entity1 instanceof Item && entity2 instanceof Bullet) return;
+		if (entity1 instanceof Bullet && entity2 instanceof Item) return;
+		if (entity1 instanceof Item && entity2 instanceof Asteroid) return;
+		if (entity1 instanceof Asteroid && entity2 instanceof Item) return;
 
 		if (MovableEntity.didEntitiesColide(entity1, entity2)) {
 			entity1.collided(entity2);
@@ -87,12 +94,20 @@ class Map {
 		return Math.random() < asteroidSpawnChance;
 	}
 
+	shouldItemSpawn () {
+		// Note that the chance to spawn more items is smaller than that of asteroids.
+		const itemSpawnChance = 0.003 + Math.sqrt(Date.now() - this.gameStartTimestamp) / 10000000;
+
+		return Math.random() < itemSpawnChance;
+	}
+
 	/*
 	* This function should be executed every game frame. It will call all of it's
 	* movableObjects's frame functions (which will update their physics), and
 	* handle any collision that happened.
 	*/
 	frame () {
+		this.fps++;
 		// Call the frame function on all movableEntities
 		this.movableEntities.forEach(entity => entity.frame());
 
@@ -112,20 +127,19 @@ class Map {
 		// see if any asteroid shouold spawn
 		if (this.shouldAsteroidSpawn()) {
 			// pick a random position for the asteroid
-			const position = new Vector(Math.random() - 0.5, Math.random() - 0.5).normalize().scale(299);
-
+			let position = new Vector(Math.random() - 0.5, Math.random() - 0.5).normalize().scale(299);
+			
 			// create the asteroid
 			new Asteroid(this.containerElement, this, position);
 		}
-		console.log(Date.now());
-	}
 
-	// This will update the count every 1000 miliseconds (1 second)
-	updateCounter() {
-		let i = 0;
-		setInterval(() => {
-			console.log(i);
-			i++;
-		}, 1000);
-	} 
+		// see if any item should spawn
+		if (this.shouldItemSpawn()) {
+			// same verification as for the asteroid
+			let position = new Vector(Math.random() - 0.5, Math.random() - 0.5).normalize().scale(299);
+
+			// create the item
+			new Item(this.containerElement, this, position);
+		}
+	}
 }

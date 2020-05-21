@@ -11,6 +11,8 @@ const hitsContainer = document.getElementById('hits');
 // Creates the asteroids counter
 const hits = new Counter(hitsContainer);
 
+const fps = document.getElementById('fps');
+
 // creates the single only map instance in the game.
 // There should be only one map in the game, so it is a Singleton class.
 // If you'd like to know more about the singleton pattern, see this link:
@@ -23,6 +25,7 @@ const player = new Player(
 	movableEntityContainer,
 	map,
 	gameOver,
+	timer
 );
 
 let time = Date.now()/1000;
@@ -37,6 +40,12 @@ function frame () {
 	if (Date.now()/1000 - time > 1) {
 		timer.update();
 		time = Date.now()/1000;
+		fps.innerText = map.fps + ' FPS';
+		map.fps = 0;
+	}
+
+	if (timer.count == player.equippedTime + player.equippedItem.duration) {
+		player.unequip();
 	}
 	
 }

@@ -25,6 +25,7 @@ class Player extends MovableEntity {
 		containerElement,
 		mapInstance,
 		gameOverFunction,
+		timer
 	) {
 
 		// The `super` function will call the constructor of the parent class.
@@ -43,6 +44,9 @@ class Player extends MovableEntity {
 		// Assigns the player's image to it's element
 		this.rootElement.style.backgroundImage = "url('assets/player.svg')";
 		this.rootElement.style.backgroundSize = this.size + 'px';
+
+		this.equippedTime = 0;
+		this.equippedItem = {"name" : "none"};
 	}
 
 	/**
@@ -57,14 +61,34 @@ class Player extends MovableEntity {
 	* Instantiates a bullet in front of the player.
 	*/
 	shoot () {
-		new Bullet (this.containerElement, this.mapInstance, this.direction);
+		new Bullet (this.containerElement, this.mapInstance, this.direction, this.equippedItem);
+	}
+
+	equip (item) {
+		this.equippedTime = timer.count;
+		this.equippedItem = item.type;
+		let face = document.getElementById('item-face');
+		face.style.backgroundImage = item.rootElement.style.backgroundImage;
+		face.style.backgroundSize = 2 * item.size + 'px';
+		face.innerText = item.type.name;
+	}
+
+	unequip () {
+		let face = document.getElementById('item-face');
+		face.style.backgroundImage = "url('assets/none.png')";
+		face.style.backgroundSize = 30 + 'px';
+		face.innerText = ' ';
 	}
 
 	/**
 	* This is only called if the player collides with an asteroid. Therefore,
 	* the game should end.
 	*/
-	collided () {
+	collided (object) {
+		if (object instanceof Item) {
+			this.equip(object);
+			return;
+		}
 		this.gameOverFunction();
 	}
 }

@@ -14,16 +14,18 @@ const MAX_ASTEROID_ROTATION_SPEED = 1;
 * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes#Sub_classing_with_extends
 */
 class Asteroid extends MovableEntity {
+	
+	type = {
+		prova: false,
+		rec: false,
+		trabalho: false
+	};
+
 	constructor (
 		containerElement,
 		mapInstance,
 		initialPosition
 	) {
-		let type = {
-			prova: false,
-			rec: false,
-			lista: false
-		};
 		const size = Asteroid.getRandomSize();
 		const direction = Asteroid.getRandomDirection();
 
@@ -102,11 +104,15 @@ class Asteroid extends MovableEntity {
 		// https://www.geeksforgeeks.org/instanceof-operator-in-javascript/
 		if (!(object instanceof Bullet)) return;
 
-		this.life --;
-		if (this.life === 0) {
+		this.life -= object.damage;
+		if (this.life <= 0) {
 			this.mapInstance.removeEntity(this);
 			this.delete();
+
+			// Increment the counter
 			this.mapInstance.hitCounter.update();
+
+			console.log(this.type);
 		}
 	}
 
