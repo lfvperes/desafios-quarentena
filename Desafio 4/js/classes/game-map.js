@@ -39,11 +39,13 @@ class GameMap extends Entity {
 		this.floor.rootElement.style.border = '1px solid black';
 		this.floor.rootElement.style.zIndex = '1';
 
+		// Make customisation easier
+		this.rootElement.id = 'map';
+
 		// The current game level. Will increase when player captures enough gold
 		this.level = 0;
 		
 		// DESAFIO 1
-		
 		// This creates the counters container and assign it an ID
 		this.counterContainer = document.createElement("div");
 		this.counterContainer.id = "counter-container";
@@ -83,6 +85,15 @@ class GameMap extends Entity {
 		for (let i = 0; i < this.calculateNumberOfRocks(); i ++) {
 			this.generateItem('rock');
 		}
+
+		// DESAFIO BÔNUS 3
+		/**
+		 * This makes less Diamonds appear, as the base score is the 
+		 * same for gold, but the Diamonds are worth more.
+		 */
+		while (this.getCurrentDiamondScoreInMap() < this.calculateTotalGoldScore()) {
+			this.generateItem('diamond');
+		}
 	}
 
 	nextLevel () {
@@ -96,6 +107,10 @@ class GameMap extends Entity {
 		// Delete all remaining gold and rock elements
 		Gold.allGoldElements.forEach(gold => gold.delete());
 		Rock.allRockElements.forEach(rock => rock.delete());
+
+		// DESAFIO BÔNUS 3
+		Diamond.allDiamondElements.forEach(diamond => diamond.delete());
+
 		this.initializeLevel();
 	}
 
@@ -131,6 +146,17 @@ class GameMap extends Entity {
 		Gold.allGoldElements.forEach(gold => score += gold.calculateScore());
 		return score;
 	}
+	
+	// DESAFIO BÔNUS 3
+	/**
+	* calculates the sum of the score of all existing diamonds in the map
+	*/
+	getCurrentDiamondScoreInMap () {
+		let score = 0;
+		Diamond.allDiamondElements.forEach(diamond => score += diamond.calculateScore());
+		return score;
+	}
+		
 
 	/**
 	* Checks if the two entities collidade, and if they did, call their `collided` method.
@@ -166,6 +192,10 @@ class GameMap extends Entity {
 		let element;
 		if (itemType === 'rock') element = new Rock(this.containerElement, Vector.zero);
 		else if (itemType === 'gold') element = new Gold(this.containerElement, Vector.zero);
+
+		// DESAFIO BÔNUS 3
+		else if (itemType === 'diamond') element = new Diamond(this.containerElement, Vector.zero);
+
 		else throw new Error(`Invalid item type '${itemType}'`);
 
 		// Checks if the new element is colliding with anything on the map

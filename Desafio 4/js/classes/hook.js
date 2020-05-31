@@ -150,12 +150,43 @@ class Hook extends MovableEntity {
 		this.velocity = this.direction.scale(THROW_SPEED);
 	}
 
+	// DESAFIO BÔNUS 2
+	/**
+	 * Will release the hooked object and pull back empty.
+	 */
+	release () {
+		// Only hooks that are being pulled back can release what's hooked.
+		if (this.state !== 'pulling') return;
+
+		// Updates de hook state so that the pullBack() method can be called..
+		this.state = 'throwing';
+		this.hookedObject = null;
+		this.pullBack();
+	}
+
+	// DESAFIO BÔNUS 2
+	/**
+	 * This will throw the hook and destroy what it hits, even if it's
+	 * gold or diamonds.
+	 */
+	drill () {
+		// Only swinging hooks can be thrown as drill
+		if (this.state !== 'swinging') return;
+
+		// updates the hook state
+		this.state = 'drill';
+
+		// The hook is thrown faster to destroy objects
+		this.velocity = this.direction.scale(3 * THROW_SPEED);
+	}
+
 	/**
 	* Will start to pull the hook back
 	*/
 	pullBack () {
-		// Only hooks that are being thrown can be pulled back.
-		if (this.state !== 'throwing') return;
+		// DESAFIO BÔNUS 2
+		// Only hooks that are being thrown or drilled can be pulled back.
+		if (this.state !== 'throwing' && this.state !== 'drill') return;
 
 		// Updates the hook state.
 		this.state = 'pulling';
@@ -222,9 +253,16 @@ class Hook extends MovableEntity {
 	* allow for behavior extension.
 	*/
 	collided (object) {
+		// DESAFIO BÔNUS 2
 		if (object instanceof Gold || object instanceof Rock) {
-			this.hookedObject = object;
-			this.hookedObject.offset = this.hookedObject.position.subtract(this.position);
+			// If the hook is thrown as drill, it will dstroy the object and come back
+			if (this.state == 'drill') {
+				object.delete();
+				this.hookedObject = null;
+			} else { // Otherwise it will behave normally
+				this.hookedObject = object;
+				this.hookedObject.offset = this.hookedObject.position.subtract(this.position);
+			}
 			this.pullBack();
 		}
 	}
@@ -242,6 +280,10 @@ class Hook extends MovableEntity {
 		else if (this.state === 'pulling' && this.shouldStopPulling()) this.stopPulling();
 		else if (this.state === 'pulling' && this.shouldRemoveLastChain()) this.removeLastChain();
 		else if (this.state === 'throwing' && this.shouldGenerateAnotherChain()) this.generateChain();
+
+		// DESAFIO BÔNUS 2
+		// The drill state also generates chains
+		else if (this.state === 'drill' && this.shouldGenerateAnotherChain()) this.generateChain();
 
 		if (this.hookedObject) {
 			// Updates the hooked object's position to follow the hook at every frame.

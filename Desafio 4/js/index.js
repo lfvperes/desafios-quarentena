@@ -12,7 +12,17 @@ function frame () {
 // This function will run every time the player presses a key
 document.body.addEventListener('keydown', event => {
 	// if that key is the spacebar, the player will try to throw it's hook.
-	if (event.key === ' ') player.throwHook();
+	if (event.key === ' ') {
+		player.throwHook();
+
+		// DESAFIO BÔNUS 2
+		// Otherwise if the key is Z, the player will release the object
+	} else if (event.key === 'z') {
+		player.releaseHooked();
+	} else if (event.key === 'x') {
+		player.drill();
+	}
+
 });
 
 // Registers the frame function to run at every frame.

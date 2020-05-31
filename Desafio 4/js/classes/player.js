@@ -67,4 +67,17 @@ class Player extends Entity {
 	throwHook () {
 		this.hook.throw();
 	}
+
+	// DESAFIO BÔNUS 2
+	/**
+	 * @argument {NÃO ESQUEÇA DE IMPLEMENTAR LIMITAÇÃO}
+	 * acionado com key UP
+	 */
+	releaseHooked () {
+		this.hook.release();
+	}
+
+	drill () {
+		this.hook.drill();
+	}
 }

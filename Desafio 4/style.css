@@ -1,3 +1,7 @@
+:root {
+	--ground: #a46422;
+}
+
 * {
 	box-sizing: border-box;
 }
@@ -47,4 +51,8 @@ body, html {
 /* DESAFIO 1 */
 #score {
 	color: springgreen;
+}
+
+#map {
+	background-color: var(--ground);
 }
