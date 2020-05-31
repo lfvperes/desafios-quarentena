@@ -56,6 +56,11 @@ class Player extends Entity {
 	onGoldHooked (goldElement) {
 		this.score += goldElement.calculateScore();
 		console.log('current player score is', this.score);
+
+		// DESAFIO 1
+		// This updates the score counter to match the current score
+		GameMap.instance.scoreCounter.update(this.score);
+
 		GameMap.instance.verifyIfLevelIsOver();
 	}
 

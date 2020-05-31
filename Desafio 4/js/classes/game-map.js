@@ -4,6 +4,9 @@ const FLOOR_HEIGHT = -100;
 const BASE_SCORE_FOR_NEXT_LEVEL = 5;
 const BASE_NUMBER_OF_ROCKS = 2;
 
+const SCORE_POSITION = new Vector(45, 20);
+const LEVEL_POSITION = new Vector(45, 50);
+
 /**
 * This is a class declaration
 * This class is responsible for defining the GameMap behavior
@@ -38,6 +41,31 @@ class GameMap extends Entity {
 
 		// The current game level. Will increase when player captures enough gold
 		this.level = 0;
+		
+		// DESAFIO 1
+		
+		// This creates the counters container and assign it an ID
+		this.counterContainer = document.createElement("div");
+		this.counterContainer.id = "counter-container";
+		
+		/**
+		 * This creates the score counter, starting at zero, and assign it
+		 * a name, an initial value and a position.
+		 * Then an ID is assigned to its root element.
+		 */
+		this.scoreCounter = new Counter(this.counterContainer, 'score', 0, SCORE_POSITION);
+		this.scoreCounter.rootElement.id = "score";
+
+		/**
+		 * This creates the level counter, starting at zero, and assign it
+		 * a name, an initial value and a position.
+		 * Then an ID is assigned to its root element.
+		 */
+		this.levelCounter = new Counter(this.counterContainer, 'level', 0, LEVEL_POSITION);
+		this.levelCounter.rootElement.id = "level";
+		
+		// Add the counter container to the map
+		this.rootElement.appendChild(this.counterContainer);
 
 		this.initializeLevel();
 
@@ -60,6 +88,11 @@ class GameMap extends Entity {
 	nextLevel () {
 		this.level ++;
 		console.log('next level');
+
+		// DESAFIO 1
+		// Update the level counter
+		this.levelCounter.update(1);
+
 		// Delete all remaining gold and rock elements
 		Gold.allGoldElements.forEach(gold => gold.delete());
 		Rock.allRockElements.forEach(rock => rock.delete());
@@ -198,5 +231,11 @@ class GameMap extends Entity {
 
 		// pull back the hook if it's gone too far
 		if (this.isEntityOutOfBounds(hook)) hook.pullBack();
+
+		// DESAFIO 1
+		// Keep the counters updated on the screen
+		for (let entity of Entity.existingEntities) {
+			if (entity instanceof Counter) entity.rootElement.innerText = entity.display();
+		}
 	}
 }

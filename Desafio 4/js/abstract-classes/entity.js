@@ -20,7 +20,7 @@ class Entity {
 
 	/**
 	* @argument { HTMLDivElement } containerElement The element that will contain
-	* the visula represntation of the entity
+	* the visual represntation of the entity
 	* @argument { Vector } size The size of the entity (x is width, y is height)
 	* @argument { Vector } initialPosition
 	* @argument { Vector } direction
