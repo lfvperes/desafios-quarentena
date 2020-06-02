@@ -25,6 +25,6 @@ class Diamond extends Gold {
 
     // This method makes the Diamond 3 times worth a gold nugget.
     calculateScore () {
-        return 5 * super.calculateScore();
+        return 3 * super.calculateScore();
     }
 }
