@@ -59,7 +59,7 @@ class Player extends Entity {
 
 		// DESAFIO 1
 		// This updates the score counter to match the current score
-		GameMap.instance.scoreCounter.update(this.score);
+		GameMap.instance.scoreCounter.update(goldElement.calculateScore());
 
 		GameMap.instance.verifyIfLevelIsOver();
 	}
