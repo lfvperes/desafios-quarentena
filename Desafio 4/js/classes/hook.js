@@ -245,6 +245,13 @@ class Hook extends MovableEntity {
 			this.hookedObject.delete();
 			this.hookedObject = null;
 		}
+
+		// DESAFIO BÔNUS 4
+		/**
+		 * now the game will verify if the level is over and if the game is over, every 
+		 * time the hook is pulled back.
+		 */
+		GameMap.instance.verifyIfLevelIsOver();
 	}
 
 	/**

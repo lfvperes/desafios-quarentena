@@ -139,7 +139,7 @@ class GameMap extends Entity {
 	}
 
 	/**
-	* calculates the sum of the score of all existing gold in the map
+	* calculates the sum of the score of all existing gold and diamonds in the map
 	*/
 	getCurrentGoldScoreInMap () {
 		let score = 0;
@@ -227,12 +227,26 @@ class GameMap extends Entity {
 		} while (isElementCollidingWithAnything());
 	}
 
+	// DESAFIO BÔNUS 4
 	/**
 	* If the player has a high enough score, generate the next level.
+	* Otherwise if the player CAN'T score high enough (due to destroying
+	* too much gold and diamonds), the game is over.
 	*/
 	verifyIfLevelIsOver () {
 		if (Player.instance.score >= this.calculateMinimumScore(this.level)) {
 			this.nextLevel();
+
+		// DESAFIO BÔNUS 4
+		/**
+		 * now the game will verify this every time the hook is pulled back,
+		 * inside the stopPulling() method from the Hook class. If the level is
+		 * over, it verifies if the player is still able to continue to next level
+		 * or if there aren't enough gold and diamonds avaliable anymore.
+		 */
+		} else if (Player.instance.score + this.getCurrentGoldScoreInMap() < this.calculateMinimumScore(this.level)) {
+			console.log("game over");
+			alert("GAME OVER")
 		}
 	}
 

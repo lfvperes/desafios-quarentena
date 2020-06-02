@@ -61,7 +61,12 @@ class Player extends Entity {
 		// This updates the score counter to match the current score
 		GameMap.instance.scoreCounter.update(goldElement.calculateScore());
 
-		GameMap.instance.verifyIfLevelIsOver();
+		// DESAFIO BÔNUS 4
+		/**
+		 * now the game will verify this every time the hook is pulled back,
+		 * inside the stopPulling() method from the Hook class.
+		 */
+		//GameMap.instance.verifyIfLevelIsOver();
 	}
 
 	throwHook () {
