@@ -21,8 +21,6 @@ class Counter extends Entity {
 
         this.name = name;
         this.value = initialValue;
-
-        console.log('oi');
     }
 
     update (increment) {

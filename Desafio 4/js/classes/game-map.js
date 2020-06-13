@@ -246,7 +246,7 @@ class GameMap extends Entity {
 		 */
 		} else if (Player.instance.score + this.getCurrentGoldScoreInMap() < this.calculateMinimumScore(this.level)) {
 			console.log("game over");
-			alert("GAME OVER")
+			alert("GAME OVER");
 		}
 	}
 
