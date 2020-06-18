@@ -98,6 +98,8 @@ class Grid {
 			});
 			possibleExplosions = this.findAllPossibleExplosions();
 		}
+		
+		this.score = 0;
 	}
 
 	/**
@@ -117,7 +119,7 @@ class Grid {
 	}
 
 	/**
-	* Will update the grid's dimensions according to it's container. It will
+	* Will update the grid's dimensions according to its container. It will
 	* always make sure that all candy are squares.
 	*/
 	updateGridDimensions () {
@@ -137,7 +139,7 @@ class Grid {
 	* @argument { Candy } candy The candy that was clciked.
 	*/
 	onClick (candy) {
-		// Te player will usually be unable to play whenever an animation is running.
+		// The player will usually be unable to play whenever an animation is running.
 		if (this.canPlayerPlay === false) return;
 
 		// If there was no previously selected candy, select the clicked one.
@@ -252,7 +254,7 @@ class Grid {
 			await sleep(100);
 			await this.moveCandy(candy2, candy1.row, candy1.column);
 		}
-		// If somwthing exploded, apply gravity to all candy, and check for further
+		// If somewthing exploded, apply gravity to all candy, and check for further
 		// possible explosions.
 		else {
 			await this.applyGravity();
@@ -291,13 +293,23 @@ class Grid {
 		this.contents[candy.row][candy.column] = null;
 	}
 
+	// DESAFIO 1
+	/**
+	 * update the score counter with the counter from the grid element
+	 */
+	updateScore(increment) {
+		Counter.allCounterElements[0].updateCounter(increment);
+
+		// earning score also grants the player more time
+		Counter.allCounterElements[1].updateCounter((increment - 1) * 5);
+	}
+
 	/**
 	* This function will explode all found matches.
 	* @returns { boolean } Whether any explosions occurred or not.
 	*/
 	async explodeAll () {
 		const explosions = this.findAllPossibleExplosions();
-
 		const results = await Promise.all(
 			explosions.map(async explosion => {
 				await Promise.all(
@@ -306,11 +318,39 @@ class Grid {
 				return true;
 			})
 		);
+
+		// DESAFIO
+		// eliminate the duplicate groups and count score accordingly
+		// by storing the indexes (from the Candy constructor) in an array
+		// and using it to make a set, whose size is the score increment
+		let candyToExplode = [];
+		let extra = 1;
+		explosions.forEach((
+			boom => {
+				boom.forEach(
+					candy => candyToExplode.push(candy.index)
+				);	
+
+				// DESAFIO BÔNUS 2
+				// chocoball (cyan line) is worth 5x more 
+				if (boom[0]._type == 5) extra = 5;
+			}
+		));
+		// DESAFIO + DESAFIO BÔNUS 2
+		// the duplicates bug makes the group count multiple explosions
+		// when the score is added again after the explosion, it adds 0
+		// (I couldn't fix the but so I got around it)
+		let score = new Set(candyToExplode);
+		console.log('Updating score: ', this.score, '+', score.size * extra);
+		this.score += score.size * extra;
+		console.log('Current Score: ', this.score);
+		this.updateScore(score.size * extra);
+
 		return results.some(e => e);
 	}
 
 	/**
-	* Returns all matches currentyl on the grid.
+	* Returns all matches currently on the grid.
 	* @returns { Candy[][]}
 	*/
 	findAllPossibleExplosions () {
@@ -365,7 +405,6 @@ class Grid {
 		possibleGroups.forEach(group => {
 			if (group.length > largestGroup.length) largestGroup = group;
 		});
-
 		return largestGroup;
 	}
 

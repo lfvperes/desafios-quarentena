@@ -53,6 +53,10 @@ class Candy {
 		this.column = column;
 		this.type = type;
 
+		// DESAFIO
+		// expressing location in a single information
+		this.index = this.row * 10 + this.column;
+
 		// Subscribes the `onClick` function to be called whenever the candy is clicked.
 		element.addEventListener('click', onClick);
 	}
@@ -84,6 +88,7 @@ class Candy {
 	/** Will automatically update the candy's border color, whenever it's type changes */
 	set type (newType) {
 		this.rootElement.style.borderColor = CandyColors[newType];
+		this.rootElement.style.backgroundImage = 'url(assets/'+ CandyColors[newType] + '.png)';
 		this._type = newType;
 	}
 
