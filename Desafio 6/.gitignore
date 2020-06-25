@@ -1,3 +1,4 @@
 node_modules/
 
 # Add your Access Token file here.
+javascript/token.js
